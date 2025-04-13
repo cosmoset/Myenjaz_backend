@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+
+.table {
+    width: 70%;
+    margin: auto;
+    border-bottom: 1px solid black;
+}
+
+.table .full {
+    width: 100% !important;
+}
+
+.value-en {
+    font-weight: bold;
+}
+
+.arbend {
+    text-align: end;
+}
+.resposible .label-ar {
+    text-align: start;
+}
+
+.info_address {
+    width: 100%;
+}
+
+.purpose .label-en,
+.purpose .label-ar {
+    text-align: start;
+}
+
+
+.Dependents td {
+    text-align: center;
+}
+
+
+.purpose td {
+    text-align: center;
+    height: 40px;
+}
+.stay-kingdom .arbend {
+    text-align: start;
+}
+.payment .label-ar {
+    text-align: start;
+}
+
+@media print {
+    body {
+        font-size: 14px;
+        margin: 5px !important;
+    }
+    .info-table,
+    .purpose {
+        width: 100% !important;
+    }
+    .work {
+    }
+}
+.agreement  {
+    border: none !important;
+}
+
+.info-table, .purpose {
+    width: 100%;
+    border-collapse: collapse; 
+}
+
+.purpose {
+    border-top: 1px solid #000; 
+    border-bottom: 1px solid #000;
+}
+
+.info-table th, 
+.info-table td, 
+.purpose th, 
+.purpose td {
+    border-bottom: 1px solid #000; 
+}
+
+.exp-date-tr td {
+    border: none;
+}
+
+.exp-date-tr {
+    gap: 5px;
+}
+
+
+
+.Dependents td {
+    border-left: 1px solid black;
+}
+
+.Dependents {
+    margin-top: 10px;
+    border: 1px solid #000000;
+    text-align: center;
+}
+
+
+header {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.profile, .embassy {
+    width: 30%;
+    text-align: start;
+}
+
+.profile-img {
+    width: 150px;
+    height: 150px;
+    border-radius: 5px;
+}
+
+.logo {
+    width: 200px;
+    text-align: center;
+}
+
+.logo img {
+    display: flex;
+    height: 150px;
+    margin-top: 100px;
+}
+
+.embassy {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    
+}
+.embassy p {
+    font-size: 14px;
+    margin: 0;
+    text-align: center;
+}
+.embassy-logo {
+    display: flex;
+    justify-content: center;
+}
+
+.visa-no {
+    margin: 0;
+    font-weight: normal;
+}
+.visa {
+    height: 50px;
+    margin-bottom: 5px;
+}
+
+    </style>
+    <title>Applicant Report</title>
+
+  </head>
+  <body>
+    
+    <header>
+      <div class="profile">
+        <div class="visa-container">       <img class="visa" src="{{VISA_BARCODE}}" alt=""></div>
+ 
+        <p class="visa-no">VISA No: {{VISA_NUMBER}}</p>
+        <p><strong>Sponsor:</strong> {{SPONSORNAME}}</p>
+          <img class="profile-img" src="{{PROFILE_IMAGE}}" alt="Profile Photo">
+      </div>
+  
+      <div class="logo">
+          <img src="{{LOGO}}" alt="Saudi Arabia Emblem">
+      </div>
+  
+      <div class="embassy">
+        <div class="embassy-logo"><img class="visa" src="{{APPLICATION_BARCODE}}" alt=""></div>
+        
+          <p>{{APPLICATION_NUMBER}}</p>
+          <p>EMBASSY OF SAUDI ARABIA<br>CONSULAR SECTION</p>
+          <p>سفارة المملكة العربية السعودية<br>القسم القنصلي</p>
+          <p>AYMU PRIVATE EMPLOYMENT AGENCY</p>
+          <p>abdulrazakadem@gmail.com</p>
+      </div>
+  </header>
+  
+
+    <main>
+      <table class="info-table table">
+        <tr class="full">
+          <td class="label-en">Full Name</td>
+          <td></td>
+          <td class="value-en" colspan="2">{{NAME}}</td>
+          <td></td>
+          <td class="label-ar" dir="rtl">الاسم بالكامل</td>
+        </tr>
+        <tr>
+          <td class="label-en">Date of Birth</td>
+          <td class="value-en">{{DATEOFBIRTH}}</td>
+          <td class="label-ar arbend" dir="rtl">تاريخ الميلاد</td>
+
+          <td class="label-en">Place of Birth</td>
+          <td class="value-en">{{PLACEOFBIRTH}}</td>
+          <td class="label-ar" dir="rtl">مكان الميلاد</td>
+        </tr>
+
+        <tr>
+          <td class="label-en">Past Nationality</td>
+          <td class="value-en"></td>
+          <td class="label-ar arbend" dir="rtl">الجنسية السابقة</td>
+
+          <td class="label-en">Current Nationality</td>
+          <td class="value-en">{{CURRENTNATIONALITY}}</td>
+          <td class="label-ar" dir="rtl">الجنسية الحالية</td>
+        </tr>
+
+        <tr>
+          <td class="label-en">Sex</td>
+          <td class="value-en">{{SEX}}</td>
+          <td class="label-ar arbend" dir="rtl">الجنس</td>
+
+          <td class="label-en">Marital Status</td>
+          <td class="value-en">{{MARITALSTATUS}}</td>
+          <td class="label-ar" dir="rtl">الحالة الاجتماعية</td>
+        </tr>
+
+        <tr>
+          <td class="label-en">Sect</td>
+          <td class="value-en">{{SECT}}</td>
+          <td class="label-ar arbend" dir="rtl"></td>
+
+          <td class="label-en">Religion</td>
+          <td class="value-en">{{RELIGION}}</td>
+          <td class="label-ar arbend" dir="rtl">الديانة</td>
+        </tr>
+
+        <tr>
+          <td class="label-en">Qualification</td>
+          <td class="value-en">{{QUALIFICATION}}</td>
+          <td class="label-ar arbend" dir="rtl">المؤهل العلمي</td>
+
+          <td class="label-en">Profession</td>
+          <td class="value-en">{{PROFESSION}}</td>
+          <td class="label-ar" dir="rtl">المهنة</td>
+        </tr>
+        <tr class="full" >
+          <td class="label-en" >Home Address and Telephone No.</td>
+          <td></td>
+          <td></td>
+          <td class="value-en"></td>
+          <td></td>
+          <td class="label-ar" dir="rtl">عنوان السكن</td>
+        </tr>
+        <tr class="full" >
+          <td class="label-en" ></td>
+          <td class="value-en">{{SPONSORADDRESS}}</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td class="label-ar" dir="rtl"></td>
+        </tr>
+
+        <tr class="full">
+          <td class="label-en">Business Address and Telephone No.</td>
+          <td></td>
+          <td></td>
+          <td class="value-en"></td>
+          <td></td>
+          <td class="label-ar" dir="rtl">عنوان العمل ورقم الهاتف</td>
+        </tr>
+      </table>
+      <br />
+      <br />
+
+      <table class="purpose table">
+        <tr class="purpose-td">
+          <td class="label-en">Purpose Of Travel</td>
+          <td class="work" style="background-color: gray; border-bottom: 2px solid black;">Work</td>
+          <td class="transit">Transit</td>
+          <td class="visit">Visit</td>
+          <td class="umrah">Umrah</td>
+          <td class="residence">Residence</td>
+          <td class="haji">Hajj</td>
+          <td class="diplomacy">Dipploamcy</td>
+          <td class="other">Other</td>
+          <td class="label-ar" dir="rtl">الغرض</td>
+        </tr>
+      </table>
+<!-- up to here. translation -->
+      <table class="info-table table">
+        <tr class="exp-date-tr">
+          <td class="label-en">Place of Issue:</td>
+          <td class="value-en">{{PLACEOFISSUE}}</td>
+          <td class="label-ar arbend" dir="rtl">تاريخ الميلاد</td>
+
+          <td class="label-en">Date of Issue:</td>
+          <td class="value-en">{{DATEOFISSUE}}</td>
+          <td class="label-ar arbend" dir="rtl">تاريخ الميلاد</td>
+
+          <td class="label-en">Passport No:</td>
+          <td class="value-en">{{PASSPORTNO}}</td>
+          <td></td>
+          <td class="label-ar arbend" dir="rtl">تاريخ الميلاد</td>
+        </tr>
+        <tr class="full">
+          <td class="label-en">Expiry Date:</td>
+          <td class="value-en">{{EXPIRYDATE}}</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td class="label-ar arbend" dir="rtl">تاريخ الميلاد</td>
+        </tr>
+      </table>
+      <table class="info-table table">
+        <tr class="stay-kingdom exp-date-tr">
+          <td class="label-ar arbend" dir="rtl">تاريخ الميلاد</td>
+          <td></td>
+          <td></td>
+
+          <td class="label-ar arbend" dir="rtl">تاريخ الميلاد</td>
+          <td></td>
+          <td></td>
+
+          <td class="label-ar arbend" dir="rtl">تاريخ الميلاد</td>
+        </tr>
+
+        <tr>
+          <td class="label-en">Duration of stay in Kingdom:</td>
+          <td></td>
+          <td></td>
+          <td class="label-en">Date of Arrival:</td>
+          <td></td>
+          <td></td>
+          <td class="label-en">Date of departuer:</td>
+        </tr>
+      </table>
+
+      <table class="info-table table payment">
+        <tr class="exp-date-tr">
+          <td class="label-en">Mode of Payment:</td>
+          <td class="value-en"></td>
+          <td class="label-ar arbend" dir="rtl">تاريخ الميلاد</td>
+
+          <td class="label-en">Payment No:</td>
+          <td class="value-en"></td>
+          <td class="label-ar arbend" dir="rtl">تاريخ الميلاد</td>
+
+          <td class="label-en">Date:</td>
+          <td class="value-en"></td>
+
+          <td class="label-ar arbend" dir="rtl">تاريخ الميلاد</td>
+        </tr>
+      </table>
+
+      <table class="info-table table Payment">
+        <tr class="exp-date-tr">
+          <td class="label-en">Relationship:</td>
+          <td class="label-ar arbend" dir="rtl">تاريخ الميلاد</td>
+        </tr>
+      </table>
+
+      <table>
+        <tr class="exp-date-tr full table">
+          <td>Dependents travelling in the same Passport:</td>
+
+          <td>تاريخ الميلاد >تاريخ الميلاد >تاريخ الميلاد</td>
+        </tr>
+      </table>
+
+      <table class="info-table table Dependents">
+        <tr class="exp-date-tr table_format">
+          <td class="label-ar arbend" dir="rtl">تاريخ الميلاد</td>
+
+          <td class="label-ar arbend" dir="rtl">تاريخ الميلاد</td>
+
+          <td class="label-ar arbend" dir="rtl">تاريخ الميلاد</td>
+          <td class="label-ar arbend" dir="rtl">تاريخ الميلاد</td>
+        </tr>
+        <tr class="full table_format">
+          <td class="label-en">Relationship</td>
+
+          <td class="label-en">Date of Birth:</td>
+
+          <td class="label-en">Sex:</td>
+          <td class="label-en">Fill Name:</td>
+        </tr>
+      </table>
+
+      <table class="info-table table Payment resposible">
+        <tr class="exp-date-tr">
+          <td class="label-en">
+            Name and address of company or individual in the Kingdom:
+          </td>
+          <td class="label-ar arbend" dir="rtl">
+            تاريخ الميلاد اريخ الميلاداريخ الميلاداريخ الميلاد
+          </td>
+        </tr>
+      </table>
+      <table class="info-table table Payment agreement resposible">
+        <tr class="exp-date-tr">
+          <td class="label-en" style="font-weight: bold">
+            The undersigned hereby certify that all the information I have
+            provided are correct. <br />
+            I will abide by the laws of the Kingdom during the period of my
+            residence in it
+          </td>
+          <td class="label-ar arbend" style="font-weight: bold" dir="rtl">
+            تاريخ الميلاد اريخ الميلاداريخ الميلاداريخ الميلاد<br />
+            تاريخ الميلاد اريخ الميلاداريخ الميلاداريخ الميلاد
+          </td>
+        </tr>
+      </table>
+      <table class="info-table table Payment resposible agreement">
+        <tr class="exp-date-tr">
+          <td class="label-en">Date:</td>
+          <td>{{DATEPAYMENT}}</td>
+          <td>Signature:</td>
+          <td>____________________________</td>
+
+          <td class="label-ar arbend" dir="rtl">اريخ الميلاداريخ</td>
+          <td>Name:</td>
+          <td>KAMARIYA ELIYAS GELANA</td>
+          <td class="label-ar arbend" dir="rtl">اريخ الميلاداريخ</td>
+        </tr>
+      </table>
+      <table class="info-table table Payment agreement resposible">
+        <tr class="exp-date-tr">
+          <td class="label-en" style="font-weight: bold">
+            For Official Use Only:
+          </td>
+          <td class="label-ar arbend" style="font-weight: bold" dir="rtl">
+            تاريخ الميلاد اريخ الميلاداريخ الميلاداريخ الميلاد
+          </td>
+        </tr>
+      </table>
+      <table class="info-table table Payment agreement resposible">
+        <tr class="exp-date-tr">
+          <td class="label-en">Date:</td>
+          <td class="label-ar arbend" dir="rtl">اري الميلاداريخ الميلاد</td>
+          <td></td>
+          <td class="label-en">Authorization</td>
+          <td class="label-ar arbend" dir="rtl">ت الميلاداريخ الميلاد</td>
+        </tr>
+      </table>
+      <table class="info-table table Payment agreement resposible">
+        <tr class="exp-date-tr">
+          <td class="label-en">Visit/Work For:</td>
+          <td class="label-ar arbend" dir="rtl">اري الميلاداريخ الميلاد</td>
+        </tr>
+      </table>
+      <table class="info-table table Payment agreement resposible">
+        <tr class="exp-date-tr">
+          <td class="label-en">Type:</td>
+          <td class="label-ar arbend" dir="rtl">اري الميلاداريخ الميلاد</td>
+          <td></td>
+          <td class="label-en">Duration</td>
+          <td class="label-ar arbend" dir="rtl">ت الميلاداريخ الميلاد</td>
+        </tr>
+      </table>
+      <table class="info-table table Payment agreement resposible">
+        <tr class="exp-date-tr">
+          <td class="label-en">ري الميلاداريخ الميلاد</td>
+          <td class="label-ar arbend" dir="rtl">اري الميلاداريخ الميلاد</td>
+        </tr>
+      </table>
+      <table class="info-table table Payment agreement resposible">
+        <tr class="exp-date-tr">
+          <td class="label-en">Head of Consular section</td>
+          <td class="label-ar arbend" dir="rtl">Checked By</td>
+        </tr>
+      </table>
+    </main>
+    <br><br>
+    <div style="font-weight: bold;"><span style="margin-right: 200px;">{{DATEOFREPORT}}</span> <span class="info">www.myenjaz.net | myenjaz.sa@gmail.com</span></div>
+  </body>
+</html>
