@@ -2,7 +2,7 @@ const puppeteer = require("puppeteer");
 const bwipjs = require("bwip-js");
 const fs = require("fs");
 const path = require("path");
-const dbConnection = require("../config/db");
+const db = require("../app/models"); 
 
 const OUTPUT_DIR = path.join(__dirname, "../output");
 
@@ -28,8 +28,8 @@ async function generateBarcode(number, label) {
 
     bwipjs.toBuffer(
       {
-        bcid: "code128", // Barcode type (Code 128 is widely used)
-        text: number.toString(), // Ensure it's a string
+        bcid: "code128",
+        text: number.toString(),
         scale: 3,
         height: 10,
         textxalign: "center",
@@ -62,7 +62,7 @@ function imageToBase64(imagePath) {
       return `data:${mimeType};base64,${imageBuffer.toString("base64")}`;
     } else {
       console.warn(`⚠️ Warning: Image not found at ${imagePath}`);
-      return ""; // Return empty string if file doesn't exist
+      return "";
     }
   } catch (error) {
     console.error(`❌ Error converting image to Base64: ${error.message}`);
@@ -70,45 +70,75 @@ function imageToBase64(imagePath) {
   }
 }
 
-/**
- * Generates a PDF certificate from an HTML template.
- * @param {object} passportno - Passport number to fetch the user data.
- */
-async function generateCertificate(passportno) {
-  // Fetch user from database
-  const [userdata] = await dbConnection.query(
-    "SELECT * FROM applications WHERE passportNo = ?",
-    [passportno]
-  );
-  const applicant = userdata[0];
-  if (applicant && applicant.regularPhoto) {
-    console.log("✅ Applicant found:", applicant);
-  }
-  // Check if applicant exists
-  if (!applicant) {
-    console.error("❌ Applicant not found!");
-    return;
+
+function formatDate(dateString){
+
+  try{
+    const date = new Date(dateString);
+
+    // Extract and format day, month, year
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    
+    const formattedDate = `${day}/${month}/${year}`;
+    
+    return formattedDate
+  }catch (error) {
+    console.error(`Error formatting date: ${error.message}`);
   }
 
+}
+
+
+/**
+ * Generates a PDF certificate from an HTML template.
+ * @param {string} passportno - Passport number to fetch the user data.
+ * @returns {string} - Path to the generated PDF.
+ */
+async function generateCertificate(passportno) {
   try {
+    // Fetch user from database using Sequelize
+    const applicant = await db.Application.findOne({
+      where: { passportNo: passportno },
+    });
+
+    if (!applicant) {
+      console.error("❌ Applicant not found!");
+      throw new Error("Applicant not found");
+    }
+
+    console.log("✅ Applicant found:", applicant.toJSON());
+
     // Read the HTML template
     const templatePath = path.join(__dirname, "../public/template/template.html");
     if (!fs.existsSync(templatePath)) {
       console.error("❌ Error: template.html not found!");
-      return;
+      throw new Error("Template not found");
     }
     let template = fs.readFileSync(templatePath, "utf8");
 
     // Convert images to Base64
-    const profileImage = imageToBase64(applicant.regularPhoto);
+    const profileImage = imageToBase64(applicant.regularPhoto || "");
     const logo = imageToBase64(path.join(__dirname, "../public/images/logo.jpg"));
-``
+
     // Generate barcodes
     const visaBarcodePath = await generateBarcode(applicant.visaNo, "visa");
     const visaBarcodeBase64 = imageToBase64(visaBarcodePath);
 
     const appBarcodePath = await generateBarcode(applicant.applicationNo, "application");
     const appBarcodeBase64 = imageToBase64(appBarcodePath);
+
+    let dateOfReport = new Date();
+    const options = {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    };
+    
+    dateOfReport = dateOfReport.toLocaleDateString('en-US', options);    
+
 
     // Replace placeholders
     template = template
@@ -118,26 +148,48 @@ async function generateCertificate(passportno) {
       .replace("{{PROFILE_IMAGE}}", profileImage)
       .replace("{{LOGO}}", logo)
       .replace("{{VISA_BARCODE}}", visaBarcodeBase64)
-      .replace("{{APPLICATION_BARCODE}}", appBarcodeBase64);
+      .replace("{{APPLICATION_BARCODE}}", appBarcodeBase64)
+      .replace("{{DATEOFBIRTH}}",formatDate(applicant.dateOfBirth))
+      .replace("{{PLACEOFBIRTH}}", applicant.placeOfBirth)
+      .replace("{{CURRENTNATIONALITY}}", applicant.currentNationality)
+      .replace("{{SEX}}", applicant.gender)
+      .replace("{{MARITALSTATUS}}", applicant.maritalStatus)
+      .replace("{{RELIGION}}", applicant.religion)
+      .replace("{{CURRENTNATIONALITY}}", "Ethiopian")
+      .replace("{{PROFESSION}}", '')
+      .replace("{{SPONSORADDRESS}}", applicant.sponsorAddress)
+      .replace("{{SPONSORNAME}}", applicant.sponsorName)
+      .replace("{{PLACEOFISSUE}}", applicant.placeOfIssue)
+      .replace("{{DATEOFISSUE}}", formatDate(applicant.dateOfIssue))
+      .replace("{{PASSPORTNO}}", applicant.passportNo)
+      .replace("{{EXPIRYDATE}}", formatDate(applicant.dateOfExpiry))
+      .replace("{{DATEOFREPORT}}", dateOfReport)
+      .replace("{{DATEPAYMENT}}", formatDate(dateOfReport))
+      .replace("{{NAME}}", applicant.fullName);
+      // .replace("{{DATEPAYMENT}}", applicant.dateofpayment)
 
     console.log("✅ Template processed successfully");
 
-    // **🔴 Fix: Add Launch Flags to Puppeteer**
+    // Launch Puppeteer
     const browser = await puppeteer.launch({
       args: [
         "--disable-setuid-sandbox",
         "--no-sandbox",
         "--single-process",
         "--no-zygote",
-    ],
-    
-      executablePath: process.env.NODE_ENV === "production" ?  process.env.PUPPETEER_EXECUTABLE_PATH : puppeteer.executablePath(),
+      ],
+      executablePath:
+        process.env.NODE_ENV === "production"
+          ? process.env.PUPPETEER_EXECUTABLE_PATH
+          : puppeteer.executablePath(),
     });
 
     const page = await browser.newPage();
-    
-    // Set User-Agent for the page
-    await page.setUserAgent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36");
+
+    // Set User-Agent
+    await page.setUserAgent(
+      "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36"
+    );
 
     await page.setContent(template, { waitUntil: "load" });
 

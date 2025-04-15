@@ -4,161 +4,193 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
+      body {
+        font-family: Arial, sans-serif;
+        font-size: 13px;
+        line-height: 1.4;
+        margin: 20px;
+      }
 
-.table {
-    width: 70%;
-    margin: auto;
-    border-bottom: 1px solid black;
-}
+      .table {
+        width: 70%;
+        margin: auto;
+        border-bottom: 1px solid black;
+        margin-bottom: 13px;
+      }
 
-.table .full {
-    width: 100% !important;
-}
-
-.value-en {
-    font-weight: bold;
-}
-
-.arbend {
-    text-align: end;
-}
-.resposible .label-ar {
-    text-align: start;
-}
-
-.info_address {
-    width: 100%;
-}
-
-.purpose .label-en,
-.purpose .label-ar {
-    text-align: start;
-}
-
-
-.Dependents td {
-    text-align: center;
-}
-
-
-.purpose td {
-    text-align: center;
-    height: 40px;
-}
-.stay-kingdom .arbend {
-    text-align: start;
-}
-.payment .label-ar {
-    text-align: start;
-}
-
-@media print {
-    body {
-        font-size: 14px;
-        margin: 5px !important;
-    }
-    .info-table,
-    .purpose {
+      .table .full {
         width: 100% !important;
-    }
-    .work {
-    }
-}
-.agreement  {
-    border: none !important;
-}
+      }
 
-.info-table, .purpose {
-    width: 100%;
-    border-collapse: collapse; 
-}
+      .value-en {
+        font-weight: bold;
+        padding: 4px 8px;
+      }
 
-.purpose {
-    border-top: 1px solid #000; 
-    border-bottom: 1px solid #000;
-}
+      .arbend {
+        text-align: end;
+      }
 
-.info-table th, 
-.info-table td, 
-.purpose th, 
-.purpose td {
-    border-bottom: 1px solid #000; 
-}
+      .resposible .label-ar {
+        text-align: start;
+      }
 
-.exp-date-tr td {
-    border: none;
-}
+      .info_address {
+        width: 100%;
+      }
 
-.exp-date-tr {
-    gap: 5px;
-}
+      .purpose .label-en,
+      .purpose .label-ar {
+        text-align: start;
+      }
 
+      .Dependents td {
+        text-align: center;
+        padding: 4px;
+      }
 
+      .purpose td {
+        text-align: center;
+        height: 30px;
+        padding: 4px;
+      }
 
-.Dependents td {
-    border-left: 1px solid black;
-}
+      .stay-kingdom .arbend {
+        text-align: start;
+      }
 
-.Dependents {
-    margin-top: 10px;
-    border: 1px solid #000000;
-    text-align: center;
-}
+      .payment .label-ar {
+        text-align: start;
+      }
 
+      @media print {
+        body {
+          font-size: 13px;
+          margin: 10px !important;
+        }
+        .info-table,
+        .purpose {
+          width: 100% !important;
+        }
+      }
 
-header {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px;
-}
+      .agreement {
+        border: none !important;
+      }
 
-.profile, .embassy {
-    width: 30%;
-    text-align: start;
-}
+      .info-table, .purpose {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 10px;
+      }
 
-.profile-img {
-    width: 150px;
-    height: 150px;
-    border-radius: 5px;
-}
+      .purpose {
+        border-top: 1px solid #000;
+        border-bottom: 1px solid #000;
+      }
 
-.logo {
-    width: 200px;
-    text-align: center;
-}
+      .info-table th, 
+      .info-table td, 
+      .purpose th, 
+      .purpose td {
+        border-bottom: 1px solid #000;
+        padding: 4px 8px;
+      }
 
-.logo img {
-    display: flex;
-    height: 150px;
-    margin-top: 100px;
-}
+      .exp-date-tr td {
+        border: none;
+        padding: 4px 8px;
+      }
 
-.embassy {
-    display: flex;
-    flex-direction: column;
-    justify-content: start;
-    
-}
-.embassy p {
-    font-size: 14px;
-    margin: 0;
-    text-align: center;
-}
-.embassy-logo {
-    display: flex;
-    justify-content: center;
-}
+      .exp-date-tr {
+        gap: 5px;
+      }
 
-.visa-no {
-    margin: 0;
-    font-weight: normal;
-}
-.visa {
-    height: 50px;
-    margin-bottom: 5px;
-}
+      .Dependents td {
+        border-left: 1px solid black;
+      }
 
+      .Dependents {
+        margin-top: 10px;
+        border: 1px solid #000000;
+        text-align: center;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        margin-bottom: 20px;
+      }
+
+      .profile, .embassy {
+        width: 30%;
+        text-align: start;
+      }
+
+      .profile-img {
+        width: 120px;
+        height: 120px;
+        border-radius: 5px;
+        margin-top: 10px;
+      }
+
+      .logo {
+        width: 200px;
+        text-align: center;
+      }
+
+      .logo img {
+        display: flex;
+        height: 120px;
+        margin-top: 80px;
+      }
+
+      .embassy {
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+      }
+
+      .embassy p {
+        font-size: 14px;
+        margin: 2px 0;
+        text-align: center;
+      }
+
+      .embassy-logo {
+        display: flex;
+        justify-content: center;
+      }
+
+      .visa-no {
+        margin: 0;
+        font-weight: normal;
+        font-size: 14px;
+      }
+
+      .visa {
+        height: 40px;
+        margin-bottom: 5px;
+      }
+
+      .label-en, .label-ar {
+        padding: 4px 8px;
+      }
+
+      main {
+        margin-top: 20px;
+      }
+
+      .work {
+        background-color: #f0f0f0;
+        border-bottom: 2px solid black;
+      }
+
+      .info {
+          font-size: 12px;
+        color: #666;
+      }
     </style>
     <title>Applicant Report</title>
 
@@ -184,8 +216,8 @@ header {
           <p>{{APPLICATION_NUMBER}}</p>
           <p>EMBASSY OF SAUDI ARABIA<br>CONSULAR SECTION</p>
           <p>سفارة المملكة العربية السعودية<br>القسم القنصلي</p>
-          <p>AYMU PRIVATE EMPLOYMENT AGENCY</p>
-          <p>abdulrazakadem@gmail.com</p>
+          <p>EZAK PRIVATE EMPLOYMENT AGENCY</p>
+          <p>contact@myenjaz.com</p>
       </div>
   </header>
   
@@ -231,7 +263,7 @@ header {
 
         <tr>
           <td class="label-en">Sect</td>
-          <td class="value-en">{{SECT}}</td>
+          <td class="value-en"></td>
           <td class="label-ar arbend" dir="rtl"></td>
 
           <td class="label-en">Religion</td>
@@ -241,7 +273,7 @@ header {
 
         <tr>
           <td class="label-en">Qualification</td>
-          <td class="value-en">{{QUALIFICATION}}</td>
+          <td class="value-en"></td>
           <td class="label-ar arbend" dir="rtl">المؤهل العلمي</td>
 
           <td class="label-en">Profession</td>
@@ -296,16 +328,16 @@ header {
         <tr class="exp-date-tr">
           <td class="label-en">Place of Issue:</td>
           <td class="value-en">{{PLACEOFISSUE}}</td>
-          <td class="label-ar arbend" dir="rtl">تاريخ الميلاد</td>
+          <td class="label-ar arbend" dir="rtl">مكان الإصدار</td>
 
           <td class="label-en">Date of Issue:</td>
           <td class="value-en">{{DATEOFISSUE}}</td>
-          <td class="label-ar arbend" dir="rtl">تاريخ الميلاد</td>
+          <td class="label-ar arbend" dir="rtl">تاريخ الإصدار</td>
 
           <td class="label-en">Passport No:</td>
           <td class="value-en">{{PASSPORTNO}}</td>
           <td></td>
-          <td class="label-ar arbend" dir="rtl">تاريخ الميلاد</td>
+          <td class="label-ar arbend" dir="rtl">رقم جواز السفر</td>
         </tr>
         <tr class="full">
           <td class="label-en">Expiry Date:</td>
@@ -322,15 +354,15 @@ header {
       </table>
       <table class="info-table table">
         <tr class="stay-kingdom exp-date-tr">
-          <td class="label-ar arbend" dir="rtl">تاريخ الميلاد</td>
+          <td class="label-ar arbend" dir="rtl">مدة االقامه بالمملكة</td>
           <td></td>
           <td></td>
 
-          <td class="label-ar arbend" dir="rtl">تاريخ الميلاد</td>
+          <td class="label-ar arbend" dir="rtl">تاريخ الوصول</td>
           <td></td>
           <td></td>
 
-          <td class="label-ar arbend" dir="rtl">تاريخ الميلاد</td>
+          <td class="label-ar arbend" dir="rtl">تاريخ المغادرة</td>
         </tr>
 
         <tr>
@@ -348,16 +380,16 @@ header {
         <tr class="exp-date-tr">
           <td class="label-en">Mode of Payment:</td>
           <td class="value-en"></td>
-          <td class="label-ar arbend" dir="rtl">تاريخ الميلاد</td>
+          <td class="label-ar arbend" dir="rtl">ع طريقة</td>
 
           <td class="label-en">Payment No:</td>
           <td class="value-en"></td>
-          <td class="label-ar arbend" dir="rtl">تاريخ الميلاد</td>
+          <td class="label-ar arbend" dir="rtl">رقم الدفع</td>
 
           <td class="label-en">Date:</td>
           <td class="value-en"></td>
 
-          <td class="label-ar arbend" dir="rtl">تاريخ الميلاد</td>
+          <td class="label-ar arbend" dir="rtl">تاريخ</td>
         </tr>
       </table>
 
@@ -378,12 +410,12 @@ header {
 
       <table class="info-table table Dependents">
         <tr class="exp-date-tr table_format">
-          <td class="label-ar arbend" dir="rtl">تاريخ الميلاد</td>
+          <td class="label-ar arbend" dir="rtl">صلة</td>
 
           <td class="label-ar arbend" dir="rtl">تاريخ الميلاد</td>
 
-          <td class="label-ar arbend" dir="rtl">تاريخ الميلاد</td>
-          <td class="label-ar arbend" dir="rtl">تاريخ الميلاد</td>
+          <td class="label-ar arbend" dir="rtl">الجنس</td>
+          <td class="label-ar arbend" dir="rtl">الاسم الكامل</td>
         </tr>
         <tr class="full table_format">
           <td class="label-en">Relationship</td>
@@ -391,7 +423,7 @@ header {
           <td class="label-en">Date of Birth:</td>
 
           <td class="label-en">Sex:</td>
-          <td class="label-en">Fill Name:</td>
+          <td class="label-en">Full Name:</td>
         </tr>
       </table>
 
@@ -401,7 +433,7 @@ header {
             Name and address of company or individual in the Kingdom:
           </td>
           <td class="label-ar arbend" dir="rtl">
-            تاريخ الميلاد اريخ الميلاداريخ الميلاداريخ الميلاد
+            اسم وعنوان الشركة أو الفرد في المملكة
           </td>
         </tr>
       </table>
@@ -414,8 +446,8 @@ header {
             residence in it
           </td>
           <td class="label-ar arbend" style="font-weight: bold" dir="rtl">
-            تاريخ الميلاد اريخ الميلاداريخ الميلاداريخ الميلاد<br />
-            تاريخ الميلاد اريخ الميلاداريخ الميلاداريخ الميلاد
+            قر انا الموقع أدناه بأن كل المعلومات التي دونتها صحيحه<br>
+            وسأكون ملتزما بقوانين المملكة أثناء فترة وجودي بها
           </td>
         </tr>
       </table>
@@ -426,10 +458,10 @@ header {
           <td>Signature:</td>
           <td>____________________________</td>
 
-          <td class="label-ar arbend" dir="rtl">اريخ الميلاداريخ</td>
+          <td class="label-ar arbend" dir="rtl">التوقيع</td>
           <td>Name:</td>
-          <td>KAMARIYA ELIYAS GELANA</td>
-          <td class="label-ar arbend" dir="rtl">اريخ الميلاداريخ</td>
+          <td>{{NAME}}</td>
+          <td class="label-ar arbend" dir="rtl">اسم</td>
         </tr>
       </table>
       <table class="info-table table Payment agreement resposible">
@@ -438,38 +470,38 @@ header {
             For Official Use Only:
           </td>
           <td class="label-ar arbend" style="font-weight: bold" dir="rtl">
-            تاريخ الميلاد اريخ الميلاداريخ الميلاداريخ الميلاد
+            ط الرسمي لالستخ
           </td>
         </tr>
       </table>
       <table class="info-table table Payment agreement resposible">
         <tr class="exp-date-tr">
           <td class="label-en">Date:</td>
-          <td class="label-ar arbend" dir="rtl">اري الميلاداريخ الميلاد</td>
+          <td class="label-ar arbend" dir="rtl">التاريخ</td>
           <td></td>
           <td class="label-en">Authorization</td>
-          <td class="label-ar arbend" dir="rtl">ت الميلاداريخ الميلاد</td>
+          <td class="label-ar arbend" dir="rtl">تفويض</td>
         </tr>
       </table>
       <table class="info-table table Payment agreement resposible">
         <tr class="exp-date-tr">
           <td class="label-en">Visit/Work For:</td>
-          <td class="label-ar arbend" dir="rtl">اري الميلاداريخ الميلاد</td>
+          <td class="label-ar arbend" dir="rtl">زيارة أو العمل من أجل</td>
         </tr>
       </table>
       <table class="info-table table Payment agreement resposible">
         <tr class="exp-date-tr">
           <td class="label-en">Type:</td>
-          <td class="label-ar arbend" dir="rtl">اري الميلاداريخ الميلاد</td>
+          <td class="label-ar arbend" dir="rtl">نوع</td>
           <td></td>
           <td class="label-en">Duration</td>
-          <td class="label-ar arbend" dir="rtl">ت الميلاداريخ الميلاد</td>
+          <td class="label-ar arbend" dir="rtl">المدة الزمنية</td>
         </tr>
       </table>
       <table class="info-table table Payment agreement resposible">
         <tr class="exp-date-tr">
-          <td class="label-en">ري الميلاداريخ الميلاد</td>
-          <td class="label-ar arbend" dir="rtl">اري الميلاداريخ الميلاد</td>
+          <td class="label-en">رئيس القسم القنصلي</td>
+          <td class="label-ar arbend" dir="rtl">فحص بواسطة</td>
         </tr>
       </table>
       <table class="info-table table Payment agreement resposible">
@@ -480,6 +512,6 @@ header {
       </table>
     </main>
     <br><br>
-    <div style="font-weight: bold;"><span style="margin-right: 200px;">{{DATEOFREPORT}}</span> <span class="info">www.myenjaz.net | myenjaz.sa@gmail.com</span></div>
+    <div style="font-weight: bold;"><span style="margin-right: 200px;">{{DATEOFREPORT}}</span> <span class="info">www.myenjaz.com | contact@myenjaz.com</span></div>
   </body>
 </html>
