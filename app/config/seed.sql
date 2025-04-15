@@ -1,9 +1,3 @@
--- schema.sql
--- Create the database if it doesn't exist
-CREATE DATABASE IF NOT EXISTS embassy_application;
-USE embassy_application;
-
--- Create the applications table
 CREATE TABLE applications (
     id INT AUTO_INCREMENT PRIMARY KEY,  -- Unique ID for each application
     
@@ -100,22 +94,8 @@ CREATE TABLE applications (
     -- New Photo Fields
     regularPhoto VARCHAR(255),  -- Regular photo (Binary Large Object for images)
     passportPhoto VARCHAR(255),  -- Passport photo (Binary Large Object for images)
-    fullsizePhoto VARCHAR(255),  -- Fullsize photo (Binary Large Object for images)
+    fullSizePhoto VARCHAR(255),  -- Fullsize photo (Binary Large Object for images)
 
     -- Record Keeping
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP  -- Auto-filled timestamp when the record is created
-);
-
-
--- Create the admin table
-CREATE TABLE admin (
-    id INT AUTO_INCREMENT PRIMARY KEY,  -- Unique ID for each admin
-    username VARCHAR(100) UNIQUE NOT NULL,  -- Admin's unique username
-    email VARCHAR(255) UNIQUE NOT NULL,  -- Admin's email for communication
-    password_hash VARCHAR(255) NOT NULL,  -- Hashed password for security
-    full_name VARCHAR(255),  -- Admin's full name
-    role ENUM('regular', 'moderator', 'staff') DEFAULT 'admin',  -- Role-based access control
-    phone_no VARCHAR(50),  -- Contact phone number
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  -- Account creation timestamp
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP  -- Last profile update timestamp
 );
