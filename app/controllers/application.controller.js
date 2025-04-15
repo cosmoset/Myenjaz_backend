@@ -2,12 +2,13 @@ const path = require("path");
 const fs = require("fs");
 const { StatusCodes } = require("http-status-codes");
 const multer = require("multer");
-const dbConnection = require("../../config/db");
+const db = require("../models"); 
+
 
 // Multer Storage Config
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const uploadPath = path.join(__dirname, "../uploads");
+    const uploadPath = path.join(__dirname, "../Uploads");
 
     // Create uploads directory if it doesn't exist
     if (!fs.existsSync(uploadPath)) {
@@ -17,7 +18,7 @@ const storage = multer.diskStorage({
     cb(null, uploadPath);
   },
   filename: function (req, file, cb) {
-    const fileExtension = file.mimetype.split("/")[1] || "jpg"; // Default to JPG if undefined
+    const fileExtension = file.mimetype.split("/")[1] || "jpg";
     const fileName = `${Date.now()}_${file.fieldname}.${fileExtension}`;
     cb(null, fileName);
   },
@@ -31,16 +32,15 @@ const upload = multer({ storage }).fields([
 ]);
 
 // Form Submission Handler
-// Form Submission Handler
 const createApplication = async (req, res) => {
-
   upload(req, res, async (err) => {
     if (err) {
-      return res.status(400).json({ message: "File upload error", error: err });
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ message: "File upload error", error: err.message });
     }
 
     try {
-
       // Extract file paths
       const regularPhoto = req.files["regularPhoto"]?.[0]?.path || null;
       const fullSizePhoto = req.files["fullSizePhoto"]?.[0]?.path || null;
@@ -48,209 +48,515 @@ const createApplication = async (req, res) => {
 
       // Extract form data
       const {
-        maritalStatus, gender, applicationNo, fullName, date, passportNo,
-        placeOfIssue, dateOfIssue, dateOfBirth, religion, qualification, city, woreda, phoneNo,
-        visaNo, sponsorId, sponsorAddress, nationalId, email, fileNo, wakala, signedOn, biometricId,
-        sponsorName, sponsorPhone, houseNo, agent, sponsorArabic, visaType, contractNo, stickerVisaNo,
-        currentNationality, laborId, relativeName, relativePhone, relativeCity, relativeWoreda,
-        relativeGender, addressRegion, relativeKinship, subcity, relativeHouseNo, relativeBirthDate,
-        contactPerson2, cocCenterName, certificateNo, contactPhone2, passportType, placeOfBirth,
-        dateOfExpiry, occupation, region, certifiedDate, medicalPlace, twoPhotographs, idCard,
-        relativeIdCard, english, experienceAbroad, worksIn, height, referenceNo, ironing, sewing,
-        babysitting, carCare, cleaning, washing, cooking, arabic, salary, numberOfChildren, weight, remark
+        maritalStatus,
+        gender,
+        applicationNo,
+        fullName,
+        date,
+        passportNo,
+        placeOfIssue,
+        dateOfIssue,
+        dateOfBirth,
+        religion,
+        qualification,
+        city,
+        woreda,
+        phoneNo,
+        visaNo,
+        sponsorId,
+        sponsorAddress,
+        nationalId,
+        email,
+        fileNo,
+        wakala,
+        signedOn,
+        biometricId,
+        sponsorName,
+        sponsorPhone,
+        houseNo,
+        agent,
+        sponsorArabic,
+        visaType,
+        contractNo,
+        stickerVisaNo,
+        currentNationality,
+        laborId,
+        relativeName,
+        relativePhone,
+        relativeCity,
+        relativeWoreda,
+        relativeGender,
+        addressRegion,
+        relativeKinship,
+        subcity,
+        relativeHouseNo,
+        relativeBirthDate,
+        contactPerson2,
+        cocCenterName,
+        certificateNo,
+        contactPhone2,
+        passportType,
+        placeOfBirth,
+        dateOfExpiry,
+        occupation,
+        region,
+        certifiedDate,
+        medicalPlace,
+        twoPhotographs,
+        idCard,
+        relativeIdCard,
+        english,
+        experienceAbroad,
+        worksIn,
+        height,
+        referenceNo,
+        ironing,
+        sewing,
+        babysitting,
+        carCare,
+        cleaning,
+        washing,
+        cooking,
+        arabic,
+        salary,
+        numberOfChildren,
+        weight,
+        remark,
       } = req.body;
 
       // Validate required fields
       if (!passportNo) {
-        return res.status(400).json({ message: "Passport number is required!" });
+        return res
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ message: "Passport number is required!" });
       }
 
-      // SQL query
-      const sql = `
-        INSERT INTO applications (
-          maritalStatus, gender, applicationNo, fullName, date, passportNo, placeOfIssue,
-          dateOfIssue, dateOfBirth, religion, qualification, city, woreda, phoneNo, visaNo,
-          sponsorId, sponsorAddress, nationalId, email, fileNo, wakala, signedOn, biometricId,
-          sponsorName, sponsorPhone, houseNo, agent, sponsorArabic, visaType, contractNo,
-          stickerVisaNo, currentNationality, laborId, relativeName, relativePhone, relativeCity,
-          relativeWoreda, relativeGender, addressRegion, relativeKinship, subcity, relativeHouseNo,
-          relativeBirthDate, contactPerson2, cocCenterName, certificateNo, contactPhone2,
-          passportType, placeOfBirth, dateOfExpiry, occupation, region, certifiedDate, medicalPlace,
-          twoPhotographs, idCard, relativeIdCard, english, experienceAbroad, worksIn, height,
-          referenceNo, ironing, sewing, babysitting, carCare, cleaning, washing, cooking, arabic,
-          salary, numberOfChildren, weight, remark, regularPhoto, fullSizePhoto, passportPhoto
-        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-      `;
+      // Create application with Sequelize
+      const application = await db.Application.create({
+        maritalStatus,
+        gender,
+        applicationNo,
+        fullName,
+        date,
+        passportNo,
+        placeOfIssue,
+        dateOfIssue,
+        dateOfBirth,
+        religion,
+        qualification,
+        city,
+        woreda,
+        phoneNo,
+        visaNo,
+        sponsorId,
+        sponsorAddress,
+        nationalId,
+        email,
+        fileNo,
+        wakala,
+        signedOn,
+        biometricId,
+        sponsorName,
+        sponsorPhone,
+        houseNo,
+        agent,
+        sponsorArabic,
+        visaType,
+        contractNo,
+        stickerVisaNo,
+        currentNationality,
+        laborId,
+        relativeName,
+        relativePhone,
+        relativeCity,
+        relativeWoreda,
+        relativeGender,
+        addressRegion,
+        relativeKinship,
+        subcity,
+        relativeHouseNo,
+        relativeBirthDate,
+        contactPerson2,
+        cocCenterName,
+        certificateNo,
+        contactPhone2,
+        passportType,
+        placeOfBirth,
+        dateOfExpiry,
+        occupation,
+        region,
+        certifiedDate,
+        medicalPlace,
+        twoPhotographs,
+        idCard,
+        relativeIdCard,
+        english,
+        experienceAbroad,
+        worksIn,
+        height,
+        referenceNo,
+        ironing,
+        sewing,
+        babysitting,
+        carCare,
+        cleaning,
+        washing,
+        cooking,
+        arabic,
+        salary,
+        numberOfChildren,
+        weight,
+        remark,
+        regularPhoto,
+        fullSizePhoto,
+        passportPhoto,
+      });
 
-      const values = [
-        maritalStatus, gender, applicationNo, fullName, date, passportNo, placeOfIssue,
-        dateOfIssue, dateOfBirth, religion, qualification, city, woreda, phoneNo, visaNo,
-        sponsorId, sponsorAddress, nationalId, email, fileNo, wakala, signedOn, biometricId,
-        sponsorName, sponsorPhone, houseNo, agent, sponsorArabic, visaType, contractNo,
-        stickerVisaNo, currentNationality, laborId, relativeName, relativePhone, relativeCity,
-        relativeWoreda, relativeGender, addressRegion, relativeKinship, subcity, relativeHouseNo,
-        relativeBirthDate, contactPerson2, cocCenterName, certificateNo, contactPhone2,
-        passportType, placeOfBirth, dateOfExpiry, occupation, region, certifiedDate, medicalPlace,
-        twoPhotographs, idCard, relativeIdCard, english, experienceAbroad, worksIn, height,
-        referenceNo, ironing, sewing, babysitting, carCare, cleaning, washing, cooking, arabic,
-        salary, numberOfChildren, weight, remark, regularPhoto, fullSizePhoto, passportPhoto
-      ];
-
-      
-      // Execute database query with promise-based API
-      const [result] = await dbConnection.query(sql, values);
-      console.log("created successfully");
-      res.status(201).json({ message: "Application submitted successfully!", applicationId: result.insertId });
+      console.log("Application created successfully");
+      res.status(StatusCodes.CREATED).json({
+        message: "Application submitted successfully!",
+        applicationId: application.id,
+      });
     } catch (error) {
-      res.status(500).json({ message: "Server error", error: error.message });
-      console.log("error", error);
+      console.error("Error creating application:", error);
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ message: "Server error", error: error.message });
     }
-    finally {
-      console.log("db completed");
-      
-    }
-
   });
 };
 
 // Get All Applicants
 const getAllApplicants = async (req, res) => {
   try {
+    // Fetch all applications with Sequelize
+    const applications = await db.Application.findAll({
+      attributes: [
+        "maritalStatus",
+        "gender",
+        "applicationNo",
+        "fullName",
+        "date",
+        "passportNo",
+        "placeOfIssue",
+        "dateOfIssue",
+        "dateOfBirth",
+        "religion",
+        "qualification",
+        "city",
+        "woreda",
+        "phoneNo",
+        "visaNo",
+        "sponsorId",
+        "sponsorAddress",
+        "nationalId",
+        "email",
+        "fileNo",
+        "wakala",
+        "signedOn",
+        "biometricId",
+        "sponsorName",
+        "sponsorPhone",
+        "houseNo",
+        "agent",
+        "sponsorArabic",
+        "visaType",
+        "contractNo",
+        "stickerVisaNo",
+        "currentNationality",
+        "laborId",
+        "relativeName",
+        "relativePhone",
+        "relativeCity",
+        "relativeWoreda",
+        "relativeGender",
+        "addressRegion",
+        "relativeKinship",
+        "subcity",
+        "relativeHouseNo",
+        "relativeBirthDate",
+        "contactPerson2",
+        "cocCenterName",
+        "certificateNo",
+        "contactPhone2",
+        "passportType",
+        "placeOfBirth",
+        "dateOfExpiry",
+        "occupation",
+        "region",
+        "certifiedDate",
+        "medicalPlace",
+        "twoPhotographs",
+        "idCard",
+        "relativeIdCard",
+        "english",
+        "experienceAbroad",
+        "worksIn",
+        "height",
+        "referenceNo",
+        "ironing",
+        "sewing",
+        "babysitting",
+        "carCare",
+        "cleaning",
+        "washing",
+        "cooking",
+        "arabic",
+        "salary",
+        "numberOfChildren",
+        "weight",
+        "remark",
+        "regularPhoto",
+        "fullSizePhoto",
+        "passportPhoto",
+      ],
+    });
 
-    // Fetch all users from the database
-    const [users] = await dbConnection.query(
-      `SELECT maritalStatus, gender, applicationNo, fullName, date, passportNo,
-      placeOfIssue, dateOfIssue, dateOfBirth, religion, qualification, city, woreda, phoneNo,
-      visaNo, sponsorId, sponsorAddress, nationalId, email, fileNo,
-      wakala, signedOn, biometricId, sponsorName, sponsorPhone, houseNo, agent,
-      sponsorArabic, visaType, contractNo, stickerVisaNo, currentNationality, laborId,
-      relativeName, relativePhone, relativeCity, relativeWoreda, relativeGender, addressRegion,
-      relativeKinship, subcity, relativeHouseNo, relativeBirthDate, contactPerson2,
-      cocCenterName, certificateNo, contactPhone2, passportType, placeOfBirth, dateOfExpiry,
-      occupation, region, certifiedDate, medicalPlace, twoPhotographs, idCard,
-      relativeIdCard, english, experienceAbroad, worksIn, height, referenceNo,
-      ironing, sewing, babysitting, carCare, cleaning, washing, cooking, arabic,
-      salary, numberOfChildren, weight, remark, regularPhoto, fullSizePhoto, passportPhoto FROM applications`
-    );
-
-    if (users.length === 0) {
-      return res.status(StatusCodes.NOT_FOUND).json({ message: "No users found" });
+    if (applications.length === 0) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "No applications found" });
     }
 
-    return res.status(StatusCodes.OK).json({ users });
-
+    return res.status(StatusCodes.OK).json({ users: applications });
   } catch (error) {
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Something went wrong, please try again later" });
+    console.error("Error fetching applications:", error);
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: "Something went wrong, please try again later" });
   }
 };
 
+// Get Single Applicant
 const getApplicant = async (req, res) => {
   try {
     const { passportNo } = req.params;
 
-    // Fetch user by passport number
-    const [user] = await dbConnection.query(
-      `SELECT * from applications WHERE passportNo = ?`,
-      [passportNo]
-    );
-    
-    if (user.length === 0) {
-      console.log("User not found");
-      return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
+    // Fetch application by passport number with Sequelize
+    const application = await db.Application.findOne({
+      where: { passportNo },
+    });
+
+    if (!application) {
+      console.log("Application not found");
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "Application not found" });
     }
 
-    // Send user data in response
-    res.status(StatusCodes.OK).json(user[0]); // Assuming user is an array, so send the first element
+    res.status(StatusCodes.OK).json(application);
   } catch (error) {
-    console.log("Error:", error);
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Something went wrong, please try again later" });
+    console.error("Error fetching application:", error);
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: "Something went wrong, please try again later" });
   }
 };
 
-
+// Edit Application
 const editApplication = async (req, res) => {
   upload(req, res, async (err) => {
     if (err) {
-      return res.status(400).json({ message: "File upload error", error: err });
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ message: "File upload error", error: err.message });
     }
 
     try {
-      const { passportNo } = req.params; // Get the passportNo from the URL params
+      const { passportNo } = req.params;
 
-      // Fetch existing user data
-      const [existingUser] = await dbConnection.query(
-        `SELECT * FROM applications WHERE passportNo = ?`,
-        [passportNo]
-      );
+      // Fetch existing application
+      const application = await db.Application.findOne({
+        where: { passportNo },
+      });
 
-      if (existingUser.length === 0) {
-        return res.status(404).json({ message: "User not found" });
+      if (!application) {
+        return res
+          .status(StatusCodes.NOT_FOUND)
+          .json({ message: "Application not found" });
       }
 
-      // Extract file paths (if files are provided)
-      const regularPhoto = req.files["regularPhoto"]?.[0]?.path || existingUser[0].regularPhoto;
-      const fullSizePhoto = req.files["fullSizePhoto"]?.[0]?.path || existingUser[0].fullSizePhoto;
-      const passportPhoto = req.files["passportPhoto"]?.[0]?.path || existingUser[0].passportPhoto;
+      // Extract file paths (use existing if not provided)
+      const regularPhoto = req.files["regularPhoto"]?.[0]?.path || application.regularPhoto;
+      const fullSizePhoto =
+        req.files["fullSizePhoto"]?.[0]?.path || application.fullSizePhoto;
+      const passportPhoto =
+        req.files["passportPhoto"]?.[0]?.path || application.passportPhoto;
 
       // Extract form data
       const {
-        maritalStatus, gender, applicationNo, fullName, date, placeOfIssue,
-        dateOfIssue, dateOfBirth, religion, qualification, city, woreda, phoneNo,
-        visaNo, sponsorId, sponsorAddress, nationalId, email, fileNo, wakala, signedOn, biometricId,
-        sponsorName, sponsorPhone, houseNo, agent, sponsorArabic, visaType, contractNo, stickerVisaNo,
-        currentNationality, laborId, relativeName, relativePhone, relativeCity, relativeWoreda,
-        relativeGender, addressRegion, relativeKinship, subcity, relativeHouseNo, relativeBirthDate,
-        contactPerson2, cocCenterName, certificateNo, contactPhone2, passportType, placeOfBirth,
-        dateOfExpiry, occupation, region, certifiedDate, medicalPlace, twoPhotographs, idCard,
-        relativeIdCard, english, experienceAbroad, worksIn, height, referenceNo, ironing, sewing,
-        babysitting, carCare, cleaning, washing, cooking, arabic, salary, numberOfChildren, weight, remark
+        maritalStatus,
+        gender,
+        applicationNo,
+        fullName,
+        date,
+        placeOfIssue,
+        dateOfIssue,
+        dateOfBirth,
+        religion,
+        qualification,
+        city,
+        woreda,
+        phoneNo,
+        visaNo,
+        sponsorId,
+        sponsorAddress,
+        nationalId,
+        email,
+        fileNo,
+        wakala,
+        signedOn,
+        biometricId,
+        sponsorName,
+        sponsorPhone,
+        houseNo,
+        agent,
+        sponsorArabic,
+        visaType,
+        contractNo,
+        stickerVisaNo,
+        currentNationality,
+        laborId,
+        relativeName,
+        relativePhone,
+        relativeCity,
+        relativeWoreda,
+        relativeGender,
+        addressRegion,
+        relativeKinship,
+        subcity,
+        relativeHouseNo,
+        relativeBirthDate,
+        contactPerson2,
+        cocCenterName,
+        certificateNo,
+        contactPhone2,
+        passportType,
+        placeOfBirth,
+        dateOfExpiry,
+        occupation,
+        region,
+        certifiedDate,
+        medicalPlace,
+        twoPhotographs,
+        idCard,
+        relativeIdCard,
+        english,
+        experienceAbroad,
+        worksIn,
+        height,
+        referenceNo,
+        ironing,
+        sewing,
+        babysitting,
+        carCare,
+        cleaning,
+        washing,
+        cooking,
+        arabic,
+        salary,
+        numberOfChildren,
+        weight,
+        remark,
       } = req.body;
 
-      // SQL query to update the data
-      const sql = `
-        UPDATE applications
-        SET maritalStatus = ?, gender = ?, applicationNo = ?, fullName = ?, date = ?, placeOfIssue = ?, dateOfIssue = ?, 
-            dateOfBirth = ?, religion = ?, qualification = ?, city = ?, woreda = ?, phoneNo = ?, visaNo = ?, sponsorId = ?, 
-            sponsorAddress = ?, nationalId = ?, email = ?, fileNo = ?, wakala = ?, signedOn = ?, biometricId = ?, 
-            sponsorName = ?, sponsorPhone = ?, houseNo = ?, agent = ?, sponsorArabic = ?, visaType = ?, contractNo = ?, 
-            stickerVisaNo = ?, currentNationality = ?, laborId = ?, relativeName = ?, relativePhone = ?, relativeCity = ?, 
-            relativeWoreda = ?, relativeGender = ?, addressRegion = ?, relativeKinship = ?, subcity = ?, relativeHouseNo = ?, 
-            relativeBirthDate = ?, contactPerson2 = ?, cocCenterName = ?, certificateNo = ?, contactPhone2 = ?, passportType = ?, 
-            placeOfBirth = ?, dateOfExpiry = ?, occupation = ?, region = ?, certifiedDate = ?, medicalPlace = ?, twoPhotographs = ?, 
-            idCard = ?, relativeIdCard = ?, english = ?, experienceAbroad = ?, worksIn = ?, height = ?, referenceNo = ?, ironing = ?, 
-            sewing = ?, babysitting = ?, carCare = ?, cleaning = ?, washing = ?, cooking = ?, arabic = ?, salary = ?, 
-            numberOfChildren = ?, weight = ?, remark = ?, regularPhoto = ?, fullSizePhoto = ?, passportPhoto = ?
-        WHERE passportNo = ?
-      `;
+      // Update application with Sequelize
+      const updated = await application.update({
+        maritalStatus,
+        gender,
+        applicationNo,
+        fullName,
+        date,
+        placeOfIssue,
+        dateOfIssue,
+        dateOfBirth,
+        religion,
+        qualification,
+        city,
+        woreda,
+        phoneNo,
+        visaNo,
+        sponsorId,
+        sponsorAddress,
+        nationalId,
+        email,
+        fileNo,
+        wakala,
+        signedOn,
+        biometricId,
+        sponsorName,
+        sponsorPhone,
+        houseNo,
+        agent,
+        sponsorArabic,
+        visaType,
+        contractNo,
+        stickerVisaNo,
+        currentNationality,
+        laborId,
+        relativeName,
+        relativePhone,
+        relativeCity,
+        relativeWoreda,
+        relativeGender,
+        addressRegion,
+        relativeKinship,
+        subcity,
+        relativeHouseNo,
+        relativeBirthDate,
+        contactPerson2,
+        cocCenterName,
+        certificateNo,
+        contactPhone2,
+        passportType,
+        placeOfBirth,
+        dateOfExpiry,
+        occupation,
+        region,
+        certifiedDate,
+        medicalPlace,
+        twoPhotographs,
+        idCard,
+        relativeIdCard,
+        english,
+        experienceAbroad,
+        worksIn,
+        height,
+        referenceNo,
+        ironing,
+        sewing,
+        babysitting,
+        carCare,
+        cleaning,
+        washing,
+        cooking,
+        arabic,
+        salary,
+        numberOfChildren,
+        weight,
+        remark,
+        regularPhoto,
+        fullSizePhoto,
+        passportPhoto,
+      });
 
-      const values = [
-        maritalStatus, gender, applicationNo, fullName, date, placeOfIssue, dateOfIssue, dateOfBirth, religion, qualification,
-        city, woreda, phoneNo, visaNo, sponsorId, sponsorAddress, nationalId, email, fileNo, wakala, signedOn, biometricId,
-        sponsorName, sponsorPhone, houseNo, agent, sponsorArabic, visaType, contractNo, stickerVisaNo, currentNationality,
-        laborId, relativeName, relativePhone, relativeCity, relativeWoreda, relativeGender, addressRegion, relativeKinship,
-        subcity, relativeHouseNo, relativeBirthDate, contactPerson2, cocCenterName, certificateNo, contactPhone2, passportType,
-        placeOfBirth, dateOfExpiry, occupation, region, certifiedDate, medicalPlace, twoPhotographs, idCard, relativeIdCard, 
-        english, experienceAbroad, worksIn, height, referenceNo, ironing, sewing, babysitting, carCare, cleaning, washing,
-        cooking, arabic, salary, numberOfChildren, weight, remark, regularPhoto, fullSizePhoto, passportPhoto, passportNo
-      ];
-
-      // Execute database query to update the record
-      const [result] = await dbConnection.query(sql, values);
-
-      if (result.affectedRows === 0) {
-        return res.status(400).json({ message: "Failed to update the application" });
+      if (!updated) {
+        return res
+          .status(StatusCodes.BAD_REQUEST)
+          .json({ message: "Failed to update the application" });
       }
 
-      console.log("Updated successfully");
-      res.status(200).json({ message: "Application updated successfully!" });
+      console.log("Application updated successfully");
+      res
+        .status(StatusCodes.OK)
+        .json({ message: "Application updated successfully!" });
     } catch (error) {
-      console.log("Error:", error);
-      res.status(500).json({ message: "Server error", error: error.message });
+      console.error("Error updating application:", error);
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ message: "Server error", error: error.message });
     }
   });
 };
-
-
-    
 
 module.exports = { createApplication, getAllApplicants, getApplicant, editApplication };
