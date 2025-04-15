@@ -1,0 +1,53 @@
+services:
+  server:
+    image: server
+    command: sh -c "npx sequelize-cli db:migrate --env production && npm start"
+    build:
+      dockerfile: ./Dockerfile
+    volumes:
+      - .:/usr/src/app   
+    environment:
+      NODE_ENV: production
+      DB_HOST: db
+      DB_USER: myenjaz
+      DB_PASSWORD: password
+      DB_NAME: mydatabase
+      DB_PORT: 5432
+      JWT_SECRET: jwt_secret
+      PUPPETEER_EXECUTABLE_PATH: /usr/bin/google-chrome-stable
+    ports:
+      - 5500:5500
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app-network
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: myenjaz
+      POSTGRES_DB: mydatabase
+      POSTGRES_PASSWORD: password
+      DB_PORT: 5432
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    container_name: myenjaz_db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U myenjaz -d mydatabase && psql -U myenjaz -d mydatabase -c 'SELECT 1;'"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s 
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+
