@@ -39,7 +39,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && chmod +x /usr/bin/google-chrome-stable
 
 # Set working directory
-WORKDIR /usr/src/app
+WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
@@ -53,7 +53,7 @@ RUN npm cache clean --force && \
 COPY . .
 
 # Set permissions and switch back to non-root user
-RUN chown -R pptruser:pptruser /usr/src/app
+RUN chown -R pptruser:pptruser /app
 USER pptruser
 
 # Expose port
