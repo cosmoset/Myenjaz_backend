@@ -15,9 +15,10 @@ if (!fs.existsSync(OUTPUT_DIR)) {
  * Generates a barcode image from a given number and saves it.
  * @param {string} number - The number to encode in the barcode.
  * @param {string} label - A label for the barcode (visa, application).
+ * @param {boolean} smaller - Whether to use a smaller barcode.
  * @returns {string} - Path to the generated barcode image.
  */
-async function generateBarcode(number, label) {
+async function generateBarcode(number, label, smaller=false) {
   return new Promise((resolve, reject) => {
     if (!number) {
       console.error(`❌ Error: Missing barcode text for ${label}`);
@@ -26,15 +27,22 @@ async function generateBarcode(number, label) {
 
     const barcodePath = path.join(OUTPUT_DIR, `barcode_${label}_${number}.png`);
 
+    // Set scale values based on whether we want a smaller barcode
+    const scaleX = smaller ? 1 : 2;
+    const scaleY = smaller ? 1 : 2;
+
     bwipjs.toBuffer(
       {
         bcid: "code128",
         text: number.toString(),
-        scale: 3,
-        height: 10,
+        scaleX: scaleX,
+        scaleY: scaleY,
+        height: smaller ? 6 : 10,
         textxalign: "center",
-        textyoffset: 6,
+        textyoffset: smaller ? 3 : 6,
         includetext: false,
+        backgroundcolor: "FFFFFF",
+        padding: smaller ? 1 : 2,
       },
       (err, png) => {
         if (err) {
@@ -156,7 +164,7 @@ async function generateCertificate(passportno) {
       .replace("{{MARITALSTATUS}}", applicant.maritalStatus)
       .replace("{{RELIGION}}", applicant.religion)
       .replace("{{CURRENTNATIONALITY}}", "Ethiopian")
-      .replace("{{PROFESSION}}", '')
+      .replace("{{PROFESSION}}", applicant.occupation)
       .replace("{{SPONSORADDRESS}}", applicant.sponsorAddress)
       .replace("{{SPONSORNAME}}", applicant.sponsorName)
       .replace("{{PLACEOFISSUE}}", applicant.placeOfIssue)
@@ -207,9 +215,115 @@ async function generateCertificate(passportno) {
   }
 }
 
+/**
+ * Generates a summary PDF for one or multiple applicants
+ * @param {string[]} passportNumbers - Array of passport numbers
+ * @returns {string} - Path to the generated PDF
+ */
+async function generateSummary(passportNumbers) {
+  try {
+    // Fetch applicants from database
+    const applicants = await db.Application.findAll({
+      where: { passportNo: passportNumbers },
+      order: [['date', 'DESC']]
+    });
+
+    if (!applicants.length) {
+      throw new Error("No applicants found");
+    }
+
+    // Read the appropriate template based on number of applicants
+    const templatePath = path.join(
+      __dirname, 
+      "../public/template/", 
+      "summary_multiple.html"
+    );
+
+    if (!fs.existsSync(templatePath)) {
+      throw new Error("Template not found");
+    }
+
+    let template = fs.readFileSync(templatePath, "utf8");
+
+    let dateOfReport = new Date();
+    const options = {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    };
+    
+    dateOfReport = dateOfReport.toLocaleDateString('en-US', options);        
+
+    // Generate barcodes for each applicant
+    const barcodes = await Promise.all(
+      applicants.map(async (applicant) => {
+        const barcodePath = await generateBarcode(applicant.applicationNo, "summary", true);
+        return {
+          applicationNo: applicant.applicationNo,
+          barcode: imageToBase64(barcodePath)
+        };
+      })
+    );
+
+      const tableRows = applicants.map((applicant, index) => `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${applicant.fullName}</td>
+          <td>${applicant.passportNo}</td>
+          <td>${applicant.sponsorId}</td>
+          <td>${applicant.visaNo}</td>
+          <td>${applicant.applicationNo}</td>
+          <td><img src="${barcodes[index].barcode}" alt="Barcode" /></td>
+        </tr>
+      `).join('');
+
+      template = template
+        .replace("{{TABLE_ROWS}}", tableRows)
+        .replace("{{DATEOFREPORT}}", dateOfReport);
+
+    // Launch Puppeteer
+    const browser = await puppeteer.launch({
+      args: [
+        "--disable-setuid-sandbox",
+        "--no-sandbox",
+        "--single-process",
+        "--no-zygote",
+      ],
+      executablePath:
+        process.env.NODE_ENV === "production"
+          ? process.env.PUPPETEER_EXECUTABLE_PATH
+          : puppeteer.executablePath(),
+    });
+
+    const page = await browser.newPage();
+    await page.setContent(template, { waitUntil: "load" });
+
+    const outputPath = path.join(
+      OUTPUT_DIR, 
+      `summary_${applicants.length > 1 ? 'multiple' : 'single'}_${Date.now()}.pdf`
+    );
+
+    await page.pdf({ 
+      path: outputPath, 
+      format: "A4", 
+      margin: { top: "20px", right: "20px", bottom: "60px", left: "20px" }
+    });
+
+    await browser.close();
+    console.log(`✅ Summary PDF generated successfully: ${outputPath}`);
+
+    return outputPath;
+  } catch (error) {
+    console.error("❌ Error generating summary:", error);
+    throw error;
+  }
+}
+
 // Export the functions
 module.exports = {
   generateBarcode,
   imageToBase64,
   generateCertificate,
+  generateSummary,
 };
