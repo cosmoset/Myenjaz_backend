@@ -1,6 +1,7 @@
 services:
   server:
     image: server
+    container_name: myenjaz_backend
     command: sh -c "npx sequelize-cli db:migrate --env production && npm start"
     build:
       dockerfile: ./Dockerfile

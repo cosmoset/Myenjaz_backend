@@ -42,13 +42,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /usr/src/app
 
 # Copy package files
-COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
+COPY package*.json ./
 
-# Install production dependencies
-RUN npm ci --only=production
-
-# Install sequelize-cli globally
-RUN npm install -g sequelize-cli@6.6.2
+# Clear npm cache and install dependencies
+RUN npm cache clean --force && \
+    npm install && \
+    npm install -g sequelize-cli@6.6.2
 
 # Copy application code
 COPY . .
