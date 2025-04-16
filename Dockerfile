@@ -53,8 +53,8 @@ RUN npm cache clean --force && \
 COPY . .
 
 # Set permissions and switch back to non-root user
-# RUN chown -R pptruser:pptruser /usr/src/app
-# USER pptruser
+RUN chown -R pptruser:pptruser /usr/src/app
+USER pptruser
 
 # Expose port
 EXPOSE 5500
