@@ -92,7 +92,12 @@ async function login(req, res) {
 
     return res
       .status(StatusCodes.OK)
-      .json({ message: "Login successful", token, username: admin.username });
+      .json({ 
+        message: "Login successful", 
+        token, 
+        username: admin.username,
+        role: admin.role
+      });
   } catch (error) {
     console.error("Login error:", error);
     return res
@@ -171,4 +176,93 @@ const check = (req, res) => {
   return res.status(StatusCodes.OK).json({ user: req.user });
 };
 
-module.exports = { register, login, logout, check, deleteAdmin };
+
+// ✅ Get All Admins
+async function getAllAdmins(req, res) {
+  try {
+    const admins = await db.Admin.findAll({
+      attributes: ['id', 'username', 'email', 'full_name', 'phone_no', 'role'],
+      order: [['created_at', 'DESC']]
+    });
+
+    // return res.status(StatusCodes.OK).json(admins);
+
+    if (req.user.role === 'admin'){
+      return res.status(StatusCodes.OK).json(admins);
+    }
+    else if (req.user.role === "sub admin") {
+      const filteredAdmins = admins.filter(
+        (admin) => admin.username === req.user.username
+      );
+      return res.status(StatusCodes.OK).json(filteredAdmins);
+    } else {
+      return res
+        .status(StatusCodes.FORBIDDEN)
+        .json({ message: "Unauthorized access" });
+    }    
+
+  } catch (error) {
+    console.error("Error fetching admins:", error);
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: "Server error" });
+  }
+}
+
+// ✅ Change Password
+async function changePassword(req, res) {
+  const { currentPassword, newPassword } = req.body;
+  const adminId = req.user.id;
+
+  if (!currentPassword || !newPassword) {
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ message: "Current password and new password are required" });
+  }
+
+  try {
+    // Get the admin
+    const admin = await db.Admin.findOne({
+      where: { id: adminId },
+    });
+
+    if (!admin) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "Admin not found" });
+    }
+
+    // Verify current password
+    const validPassword = await compare(currentPassword, admin.password_hash);
+    if (!validPassword) {
+      return res
+        .status(StatusCodes.UNAUTHORIZED)
+        .json({ message: "Current password is incorrect" });
+    }
+
+    // Hash and update new password
+    const salt = await genSalt(10);
+    const hashedPassword = await hash(newPassword, salt);
+    await admin.update({ password_hash: hashedPassword });
+
+    return res
+      .status(StatusCodes.OK)
+      .json({ message: "Password changed successfully" });
+  } catch (error) {
+    console.error("Error changing password:", error);
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ message: "Server error" });
+  }
+}
+
+
+module.exports = { 
+  register, 
+  login, 
+  logout, 
+  check, 
+  deleteAdmin,
+  getAllAdmins,
+  changePassword 
+}; 
