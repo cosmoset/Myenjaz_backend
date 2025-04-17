@@ -317,8 +317,19 @@ const getAllApplicants = async (req, res) => {
         .status(StatusCodes.NOT_FOUND)
         .json({ message: "No applications found" });
     }
-
-    return res.status(StatusCodes.OK).json({ users: applications });
+    if (req.user.role === 'admin'){
+      return res.status(StatusCodes.OK).json({ users: applications });
+    }
+    else if (req.user.role === "sub admin") {
+      const filteredApplications = applications.filter(
+        (app) => app.agent === req.user.username
+      );
+      return res.status(StatusCodes.OK).json({ users: filteredApplications });
+    } else {
+      return res
+        .status(StatusCodes.FORBIDDEN)
+        .json({ message: "Unauthorized access" });
+    }
   } catch (error) {
     console.error("Error fetching applications:", error);
     return res

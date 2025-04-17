@@ -14,7 +14,7 @@ app.use("/uploads", express.static(path.join(__dirname, "./app/uploads")));
 const generatepdf = require("./app/routes/report.routes");
 app.use("/api/application", generatepdf);
 
-const adminRoute = require("./app/routes/user.routes");
+const adminRoute = require("./app/routes/admin.routes");
 app.use("/api/admin", adminRoute);
 
 const application = require("./app/routes/application.routes");

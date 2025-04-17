@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { generateCertificateHandler, generateSummaryHandler } = require("../controllers/generatepdf.controller");
-const authMiddleware = require("../middlewares/auth_middle_ware");
+const {authMiddleware} = require("../middlewares/authMiddleware");
 
 // Route to generate the PDF certificate
 router.get("/generate-report/:id", authMiddleware, generateCertificateHandler);
