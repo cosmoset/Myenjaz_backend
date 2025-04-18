@@ -1,11 +1,20 @@
 const { generateCertificate, generateSummary } = require("../../utils/generatepdf");
+const db = require("../models");
 
 const generateCertificateHandler = async (req, res) => {
     try {
         const passportno = req.params.id;
 
+        username = req.user.username
+
+        const admin = await db.Admin.findOne({
+              where: { username },
+        });
+
+        agent_email = admin.email
+    
         // Generate the certificate and get the output file path
-        const filePath = await generateCertificate(passportno);
+        const filePath = await generateCertificate(passportno, agent_email);
 
         if (!filePath) {
             throw new Error("File path is undefined.");

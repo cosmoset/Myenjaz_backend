@@ -104,7 +104,7 @@ function formatDate(dateString){
  * @param {string} passportno - Passport number to fetch the user data.
  * @returns {string} - Path to the generated PDF.
  */
-async function generateCertificate(passportno) {
+async function generateCertificate(passportno, agent_email) {
   try {
     // Fetch user from database using Sequelize
     const applicant = await db.Application.findOne({
@@ -153,6 +153,7 @@ async function generateCertificate(passportno) {
       .replace("{{NAME}}", applicant.fullName)
       .replace("{{VISA_NUMBER}}", applicant.visaNo)
       .replace("{{APPLICATION_NUMBER}}", applicant.applicationNo)
+      .replace("{{AGENT_EMAIL}}", agent_email)
       .replace("{{PROFILE_IMAGE}}", profileImage)
       .replace("{{LOGO}}", logo)
       .replace("{{VISA_BARCODE}}", visaBarcodeBase64)
