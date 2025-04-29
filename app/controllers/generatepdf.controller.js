@@ -12,9 +12,10 @@ const generateCertificateHandler = async (req, res) => {
         });
 
         agent_email = admin.email
+        agent_username = admin.username
     
         // Generate the certificate and get the output file path
-        const filePath = await generateCertificate(passportno, agent_email);
+        const filePath = await generateCertificate(passportno, agent_email, agent_username);
 
         if (!filePath) {
             throw new Error("File path is undefined.");
